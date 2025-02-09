@@ -90,10 +90,10 @@ async function ShopPage({ searchParams }: Props) {
 
       {/* Collection Filters */}
       <div className="container">
-        <div className="flex gap-4 mb-8 overflow-x-auto pb-4">
+        <div className="flex flex-wrap gap-2 mb-8">
           <Link
             href="/shop"
-            className={`px-8 py-2 rounded-[40px] whitespace-nowrap transition-colors ${
+            className={`px-8 py-2 whitespace-nowrap transition-colors font-medium ${
               !searchParams.collection
                 ? 'bg-[#354439] text-white'
                 : 'bg-[#354439]/[0.08] text-[#354439] hover:bg-[#354439]/[0.12]'
@@ -105,7 +105,7 @@ async function ShopPage({ searchParams }: Props) {
             <Link
               key={collection.id}
               href={`/shop?collection=${collection.id}`}
-              className={`px-8 py-2 rounded-[40px] whitespace-nowrap transition-colors ${
+              className={`px-8 py-2 whitespace-nowrap transition-colors font-medium ${
                 searchParams.collection === collection.id
                   ? 'bg-[#354439] text-white'
                   : 'bg-[#354439]/[0.08] text-[#354439] hover:bg-[#354439]/[0.12]'
