@@ -40,7 +40,7 @@ export default function AddToBoxButton({ product }: AddToBoxButtonProps) {
           fill="white"
         />
       </svg>
-      <span className="text-base font-bold text-left text-white">Add to Box</span>
+      <span className="text-base font-medium text-left text-white">Add to Box</span>
     </button>
   );
 } 

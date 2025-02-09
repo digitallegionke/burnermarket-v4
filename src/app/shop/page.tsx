@@ -157,7 +157,7 @@ async function ShopPage({ searchParams }: Props) {
             </p>
           </div>
         ) : (
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-9">
             {products.map((product: ShopifyProduct) => (
               <div
                 key={product.id}
@@ -206,7 +206,7 @@ async function ShopPage({ searchParams }: Props) {
                     </p>
                     {product.variants && product.variants[0] && (
                       <>
-                        <p className="self-stretch w-[282px] text-[22px] font-bold text-left text-[#c06654]">
+                        <p className="self-stretch w-[282px] text-xl font-bold text-left text-[#c06654]">
                           KSH {parseFloat(product.variants[0].price.amount).toFixed(2)}
                         </p>
                         <p className="self-stretch w-[282px] text-xs font-bold text-left text-[#c06654]">
@@ -223,7 +223,10 @@ async function ShopPage({ searchParams }: Props) {
                     id: product.id,
                     title: product.title,
                     price: product.variants[0].price,
-                    image: product.images[0]
+                    image: product.images[0] ? {
+                      ...product.images[0],
+                      alt: product.images[0].alt || product.title
+                    } : undefined
                   }}
                 />
               </div>
