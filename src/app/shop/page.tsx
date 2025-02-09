@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getAllProducts } from '@/lib/shopify';
+import { getAllProducts, getAllCollections, getProductsByCollection } from '@/lib/shopify';
 import ErrorState from '@/components/ErrorState';
 
 export const revalidate = 60; // Revalidate this page every 60 seconds
@@ -32,12 +32,33 @@ interface ShopifyProduct {
   variants: ShopifyVariant[];
 }
 
-async function ShopPage() {
+interface ShopifyCollection {
+  id: string;
+  title: string;
+  handle: string;
+  description: string;
+  image: ShopifyImage | null;
+}
+
+interface Props {
+  searchParams: { collection?: string };
+}
+
+async function ShopPage({ searchParams }: Props) {
   let products: ShopifyProduct[] = [];
+  let collections: ShopifyCollection[] = [];
   let error: string | null = null;
 
   try {
-    products = await getAllProducts();
+    // Fetch collections first
+    collections = await getAllCollections();
+
+    // Fetch products based on selected collection or all products
+    if (searchParams.collection) {
+      products = await getProductsByCollection(searchParams.collection);
+    } else {
+      products = await getAllProducts();
+    }
   } catch (e) {
     console.error('Error in shop page:', e);
     error = e instanceof Error ? e.message : 'Failed to load products. Please try again later.';
@@ -67,6 +88,35 @@ async function ShopPage() {
         </span>
       </div>
 
+      {/* Collection Filters */}
+      <div className="container">
+        <div className="flex gap-4 mb-8 overflow-x-auto pb-4">
+          <Link
+            href="/shop"
+            className={`px-8 py-2 rounded-[40px] whitespace-nowrap transition-colors ${
+              !searchParams.collection
+                ? 'bg-[#354439] text-white'
+                : 'bg-[#354439]/[0.08] text-[#354439] hover:bg-[#354439]/[0.12]'
+            }`}
+          >
+            All Products
+          </Link>
+          {collections.map((collection) => (
+            <Link
+              key={collection.id}
+              href={`/shop?collection=${collection.id}`}
+              className={`px-8 py-2 rounded-[40px] whitespace-nowrap transition-colors ${
+                searchParams.collection === collection.id
+                  ? 'bg-[#354439] text-white'
+                  : 'bg-[#354439]/[0.08] text-[#354439] hover:bg-[#354439]/[0.12]'
+              }`}
+            >
+              {collection.title}
+            </Link>
+          ))}
+        </div>
+      </div>
+
       {/* Products Grid */}
       <div className="container py-16">
         {error ? (
@@ -79,24 +129,23 @@ async function ShopPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="flex flex-wrap gap-4">
             {products.map((product: ShopifyProduct) => (
-              <Link
+              <div
                 key={product.id}
-                href={`/shop/${product.handle}`}
-                className="flex flex-col gap-5 group"
+                className="flex flex-col justify-start items-start w-[282px] gap-5"
               >
                 {/* Product Image Container */}
-                <div className="aspect-square w-full bg-white border border-[#e7e7e7] rounded-lg overflow-hidden">
+                <div className="self-stretch h-60 bg-white border border-[#e7e7e7]">
                   <div className="w-full h-full p-4 flex items-center justify-center">
                     {product.images && product.images[0] ? (
-                      <div className="relative w-full h-full transition-transform duration-300 group-hover:scale-105">
+                      <div className="relative w-full h-full">
                         <Image
                           src={product.images[0].src}
                           alt={product.images[0].alt || product.title}
                           fill
                           className="object-contain"
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                          sizes="282px"
                         />
                       </div>
                     ) : (
@@ -108,17 +157,49 @@ async function ShopPage() {
                 </div>
 
                 {/* Product Info */}
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-lg font-semibold text-[#354439] group-hover:text-[#2a3632] transition-colors line-clamp-2">
-                    {product.title}
-                  </h3>
-                  {product.variants && product.variants[0] && (
-                    <p className="text-base font-bold text-[#354439]/70">
-                      ${parseFloat(product.variants[0].price.amount).toFixed(2)}
+                <div className="flex flex-col justify-between items-start self-stretch h-[130px]">
+                  <div className="flex flex-col justify-start items-start self-stretch">
+                    <p className="self-stretch w-[282px] text-[22px] font-semibold text-left text-[#354439]">
+                      {product.title}
                     </p>
-                  )}
+                    <p className="self-stretch w-[282px] opacity-70 text-sm font-semibold text-left uppercase text-[#354439]">
+                      BY Mavuno Farm
+                    </p>
+                  </div>
+                  <div className="flex flex-col justify-start items-start self-stretch">
+                    <p className="self-stretch w-[282px] opacity-80 text-sm font-medium text-left text-[#c06654]">
+                      from
+                    </p>
+                    {product.variants && product.variants[0] && (
+                      <>
+                        <p className="self-stretch w-[282px] text-[22px] font-bold text-left text-[#c06654]">
+                          KSH {parseFloat(product.variants[0].price.amount).toFixed(2)}
+                        </p>
+                        <p className="self-stretch w-[282px] text-xs font-bold text-left text-[#c06654]">
+                          Per Kg
+                        </p>
+                      </>
+                    )}
+                  </div>
                 </div>
-              </Link>
+
+                {/* Add to Box Button */}
+                <button className="flex justify-end items-center gap-1.5 px-[21px] py-2.5 rounded-[40px] bg-[#354439] hover:bg-[#2a3632] transition-colors">
+                  <svg
+                    width="12"
+                    height="13"
+                    viewBox="0 0 12 13"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M5.14286 7.35714H0.857143C0.614286 7.35714 0.410714 7.275 0.246429 7.11071C0.0821429 6.94643 0 6.74286 0 6.5C0 6.25714 0.0821429 6.05357 0.246429 5.88929C0.410714 5.725 0.614286 5.64286 0.857143 5.64286H5.14286V1.35714C5.14286 1.11429 5.225 0.910714 5.38929 0.746429C5.55357 0.582143 5.75714 0.5 6 0.5C6.24286 0.5 6.44643 0.582143 6.61071 0.746429C6.775 0.910714 6.85714 1.11429 6.85714 1.35714V5.64286H11.1429C11.3857 5.64286 11.5893 5.725 11.7536 5.88929C11.9179 6.05357 12 6.25714 12 6.5C12 6.74286 11.9179 6.94643 11.7536 7.11071C11.5893 7.275 11.3857 7.35714 11.1429 7.35714H6.85714V11.6429C6.85714 11.8857 6.775 12.0893 6.61071 12.2536C6.44643 12.4179 6.24286 12.5 6 12.5C5.75714 12.5 5.55357 12.4179 5.38929 12.2536C5.225 12.0893 5.14286 11.8857 5.14286 11.6429V7.35714Z"
+                      fill="white"
+                    />
+                  </svg>
+                  <span className="text-base font-bold text-left text-white">Add to Box</span>
+                </button>
+              </div>
             ))}
           </div>
         )}
