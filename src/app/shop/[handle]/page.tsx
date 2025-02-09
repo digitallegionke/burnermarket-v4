@@ -5,12 +5,6 @@ import { getProductByHandle } from '@/lib/shopify';
 
 export const revalidate = 60; // Revalidate this page every 60 seconds
 
-interface Props {
-  params: {
-    handle: string;
-  };
-}
-
 interface ShopifyImage {
   src: string;
   alt?: string;
@@ -43,6 +37,12 @@ interface ShopifyProduct {
   images: ShopifyImage[];
   variants: ShopifyVariant[];
   options: ShopifyOption[];
+}
+
+interface Props {
+  params: {
+    handle: string;
+  };
 }
 
 async function ProductPage({ params }: Props) {
@@ -161,7 +161,7 @@ async function ProductPage({ params }: Props) {
               </h1>
               {defaultVariant && (
                 <p className="text-2xl font-bold text-[#354439]">
-                  ${parseFloat(defaultVariant.price.amount).toFixed(2)}
+                  KSH {parseFloat(defaultVariant.price.amount).toFixed(2)}
                 </p>
               )}
             </div>

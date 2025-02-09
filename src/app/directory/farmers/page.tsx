@@ -64,7 +64,7 @@ export default function FarmersPage() {
             Discover the passionate farmers behind our ingredients. Each farmer brings their unique expertise
             and commitment to sustainable agriculture to deliver the finest products to your table.
           </p>
-          <div className="flex items-center gap-3 px-[30px] h-[77px] rounded-[60px] bg-[#354439]/[0.06] border border-[#354439]/20">
+          <div className="flex items-center gap-3 px-[30px] h-[77px] rounded-[40px] bg-[#354439]/[0.06] border border-[#354439]/20">
             <svg
               width="24"
               height="25"

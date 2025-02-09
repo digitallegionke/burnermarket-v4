@@ -60,7 +60,7 @@ export default function IngredientsPage() {
             We've carefully curated details about each ingredient from what it is, how to care for it to
             how to cook with it, giving you a delightful experience
           </p>
-          <div className="flex items-center gap-3 px-[30px] h-[77px] rounded-[60px] bg-[#354439]/[0.06] border border-[#354439]/20">
+          <div className="flex items-center gap-3 px-[30px] h-[77px] rounded-[40px] bg-[#354439]/[0.06] border border-[#354439]/20">
             <svg
               width="24"
               height="25"

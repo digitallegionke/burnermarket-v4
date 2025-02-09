@@ -3,6 +3,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getAllProducts, getAllCollections, getProductsByCollection } from '@/lib/shopify';
 import ErrorState from '@/components/ErrorState';
+import AddToBoxButton from '@/components/AddToBoxButton';
+import SearchBar from '@/components/SearchBar';
 
 export const revalidate = 60; // Revalidate this page every 60 seconds
 
@@ -41,7 +43,10 @@ interface ShopifyCollection {
 }
 
 interface Props {
-  searchParams: { collection?: string };
+  searchParams: { 
+    collection?: string;
+    q?: string;
+  };
 }
 
 async function ShopPage({ searchParams }: Props) {
@@ -58,6 +63,15 @@ async function ShopPage({ searchParams }: Props) {
       products = await getProductsByCollection(searchParams.collection);
     } else {
       products = await getAllProducts();
+    }
+
+    // Filter products by search query if present
+    if (searchParams.q) {
+      const searchQuery = searchParams.q.toLowerCase();
+      products = products.filter(product => 
+        product.title.toLowerCase().includes(searchQuery) ||
+        product.description.toLowerCase().includes(searchQuery)
+      );
     }
   } catch (e) {
     console.error('Error in shop page:', e);
@@ -88,12 +102,20 @@ async function ShopPage({ searchParams }: Props) {
         </span>
       </div>
 
+      {/* Search Bar */}
+      <div className="container mb-8">
+        <SearchBar />
+      </div>
+
       {/* Collection Filters */}
       <div className="container">
         <div className="flex flex-wrap gap-2 mb-8">
           <Link
-            href="/shop"
-            className={`px-8 py-2 whitespace-nowrap transition-colors font-medium ${
+            href={{
+              pathname: '/shop',
+              query: searchParams.q ? { q: searchParams.q } : {}
+            }}
+            className={`px-8 py-2.5 rounded-[40px] whitespace-nowrap transition-colors font-medium ${
               !searchParams.collection
                 ? 'bg-[#354439] text-white'
                 : 'bg-[#354439]/[0.08] text-[#354439] hover:bg-[#354439]/[0.12]'
@@ -104,8 +126,14 @@ async function ShopPage({ searchParams }: Props) {
           {collections.map((collection) => (
             <Link
               key={collection.id}
-              href={`/shop?collection=${collection.id}`}
-              className={`px-8 py-2 whitespace-nowrap transition-colors font-medium ${
+              href={{
+                pathname: '/shop',
+                query: {
+                  collection: collection.id,
+                  ...(searchParams.q ? { q: searchParams.q } : {})
+                }
+              }}
+              className={`px-8 py-2.5 rounded-[40px] whitespace-nowrap transition-colors font-medium ${
                 searchParams.collection === collection.id
                   ? 'bg-[#354439] text-white'
                   : 'bg-[#354439]/[0.08] text-[#354439] hover:bg-[#354439]/[0.12]'
@@ -133,13 +161,16 @@ async function ShopPage({ searchParams }: Props) {
             {products.map((product: ShopifyProduct) => (
               <div
                 key={product.id}
-                className="flex flex-col justify-start items-start w-[282px] gap-5"
+                className="flex flex-col justify-start items-start w-[282px] gap-5 group"
               >
-                {/* Product Image Container */}
-                <div className="self-stretch h-60 bg-white border border-[#e7e7e7]">
+                {/* Product Image Container - Clickable */}
+                <Link 
+                  href={`/shop/${product.handle}`}
+                  className="self-stretch h-60 bg-white border border-[#e7e7e7] overflow-hidden group-hover:border-[#354439]/20 transition-colors"
+                >
                   <div className="w-full h-full p-4 flex items-center justify-center">
                     {product.images && product.images[0] ? (
-                      <div className="relative w-full h-full">
+                      <div className="relative w-full h-full transition-transform duration-300 group-hover:scale-105">
                         <Image
                           src={product.images[0].src}
                           alt={product.images[0].alt || product.title}
@@ -154,10 +185,13 @@ async function ShopPage({ searchParams }: Props) {
                       </div>
                     )}
                   </div>
-                </div>
+                </Link>
 
-                {/* Product Info */}
-                <div className="flex flex-col justify-between items-start self-stretch h-[130px]">
+                {/* Product Info - Clickable */}
+                <Link 
+                  href={`/shop/${product.handle}`}
+                  className="flex flex-col justify-between items-start self-stretch h-[130px] group-hover:opacity-90 transition-opacity"
+                >
                   <div className="flex flex-col justify-start items-start self-stretch">
                     <p className="self-stretch w-[282px] text-[22px] font-semibold text-left text-[#354439]">
                       {product.title}
@@ -181,24 +215,17 @@ async function ShopPage({ searchParams }: Props) {
                       </>
                     )}
                   </div>
-                </div>
+                </Link>
 
                 {/* Add to Box Button */}
-                <button className="flex justify-end items-center gap-1.5 px-[21px] py-2.5 rounded-[40px] bg-[#354439] hover:bg-[#2a3632] transition-colors">
-                  <svg
-                    width="12"
-                    height="13"
-                    viewBox="0 0 12 13"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M5.14286 7.35714H0.857143C0.614286 7.35714 0.410714 7.275 0.246429 7.11071C0.0821429 6.94643 0 6.74286 0 6.5C0 6.25714 0.0821429 6.05357 0.246429 5.88929C0.410714 5.725 0.614286 5.64286 0.857143 5.64286H5.14286V1.35714C5.14286 1.11429 5.225 0.910714 5.38929 0.746429C5.55357 0.582143 5.75714 0.5 6 0.5C6.24286 0.5 6.44643 0.582143 6.61071 0.746429C6.775 0.910714 6.85714 1.11429 6.85714 1.35714V5.64286H11.1429C11.3857 5.64286 11.5893 5.725 11.7536 5.88929C11.9179 6.05357 12 6.25714 12 6.5C12 6.74286 11.9179 6.94643 11.7536 7.11071C11.5893 7.275 11.3857 7.35714 11.1429 7.35714H6.85714V11.6429C6.85714 11.8857 6.775 12.0893 6.61071 12.2536C6.44643 12.4179 6.24286 12.5 6 12.5C5.75714 12.5 5.55357 12.4179 5.38929 12.2536C5.225 12.0893 5.14286 11.8857 5.14286 11.6429V7.35714Z"
-                      fill="white"
-                    />
-                  </svg>
-                  <span className="text-base font-bold text-left text-white">Add to Box</span>
-                </button>
+                <AddToBoxButton
+                  product={{
+                    id: product.id,
+                    title: product.title,
+                    price: product.variants[0].price,
+                    image: product.images[0]
+                  }}
+                />
               </div>
             ))}
           </div>

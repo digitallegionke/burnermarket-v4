@@ -114,7 +114,7 @@ export async function getProductByHandle(handle: string) {
       options: product.options.map(option => ({
         id: option.id,
         name: option.name,
-        values: option.values
+        values: Array.isArray(option.values) ? option.values : [option.values].filter(Boolean)
       }))
     };
     
