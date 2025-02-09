@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: 53, 68, 57;
+  --foreground-rgb: var(--primary);
+  --background-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+}
+
+/* Add smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  h1 {
+    @apply text-[44px] font-semibold leading-[120%];
+  }
+  h2 {
+    @apply text-[32px] font-semibold leading-[120%];
+  }
+  h3 {
+    @apply text-[26px] font-semibold leading-[120%];
+  }
+  p {
+    @apply text-[18px] leading-[120%];
+  }
+}
+
+@layer components {
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .link-transition {
+    @apply transition-colors duration-200;
+  }
+
+  .nav-link {
+    @apply text-[18px] font-semibold hover:text-[#c06654];
+  }
+
+  .footer {
+    @apply bg-[rgb(53,68,57)];
+  }
+
+  .footer-overlay {
+    @apply bg-black/[0.23];
+  }
+
+  .footer-text {
+    @apply text-white text-[20px] leading-[38px];
+  }
+
+  .footer-heading {
+    @apply text-white text-[34px] font-medium leading-[120%];
+  }
+}
