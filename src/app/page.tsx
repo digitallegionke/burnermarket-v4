@@ -68,14 +68,14 @@ export default async function Home() {
   return (
     <div className="pt-[120px]">
       {/* Hero Section */}
-      <section className="flex flex-col justify-start items-center gap-[70px] pt-[60px]">
-        <div className="flex flex-col justify-start items-start self-stretch gap-9 px-20">
-          <h1 className="w-[999px] text-[64px] font-semibold text-left text-[#354439]">
+      <section className="flex flex-col justify-start items-center gap-[40px] md:gap-[70px] pt-[30px] md:pt-[60px]">
+        <div className="container flex flex-col justify-start items-start self-stretch gap-6 md:gap-9 px-6 md:px-20">
+          <h1 className="w-full max-w-[999px] text-[36px] md:text-[64px] font-semibold text-left text-[#354439] leading-tight">
             Bring Loved Ones Together with Every Delicious, Clean Creation.
           </h1>
           <Link 
             href="/shop"
-            className="flex justify-center items-center gap-2 px-7 py-3.5 rounded-[999px] bg-[#c06654] hover:bg-[#c06654]/90 transition-colors"
+            className="flex justify-center items-center gap-2 w-full md:w-auto px-7 py-4 md:py-3.5 rounded-[999px] bg-[#c06654] hover:bg-[#c06654]/90 transition-colors text-center"
           >
             <span className="text-lg font-bold text-white">
               Discover Burner Market
@@ -83,8 +83,8 @@ export default async function Home() {
           </Link>
         </div>
         
-        <div className="flex flex-col justify-start items-center self-stretch relative overflow-hidden gap-[43px] pb-20 bg-[#354439]">
-          <div className="self-stretch h-[534px] relative">
+        <div className="flex flex-col justify-start items-center self-stretch relative overflow-hidden gap-[20px] md:gap-[43px] pb-10 md:pb-20 bg-[#354439]">
+          <div className="self-stretch h-[300px] md:h-[534px] relative">
             <Image
               src={`/images/hero/${encodeURIComponent('pexels-august-de-richelieu-4262418 2.png')}`}
               alt="Family enjoying a meal together"
@@ -93,11 +93,11 @@ export default async function Home() {
               priority
             />
           </div>
-          <div className="flex flex-col justify-start items-start self-stretch gap-[13px] px-20">
-            <p className="text-[19px] font-semibold text-left text-white/60">
+          <div className="container flex flex-col justify-start items-start self-stretch gap-4 md:gap-[13px] px-6 md:px-20">
+            <p className="text-[16px] md:text-[19px] font-semibold text-left text-white/60">
               OUR CORE MISSION
             </p>
-            <p className="w-[1214px] text-[43px] text-left text-white">
+            <p className="w-full max-w-[1214px] text-[24px] md:text-[43px] text-left text-white leading-tight md:leading-normal">
               We curate the finest, clean, and delicious food items to make it easy for you to create
               mouth-watering snacks and meals for yourself and your loved ones, effortlessly.
             </p>
