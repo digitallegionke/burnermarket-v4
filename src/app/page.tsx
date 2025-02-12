@@ -86,7 +86,7 @@ export default async function Home() {
         <div className="flex flex-col justify-start items-center self-stretch relative overflow-hidden gap-[43px] pb-20 bg-[#354439]">
           <div className="self-stretch h-[534px] relative">
             <Image
-              src="/images/hero/pexels-august-de-richelieu-4262418 2.png"
+              src={`/images/hero/${encodeURIComponent('pexels-august-de-richelieu-4262418 2.png')}`}
               alt="Family enjoying a meal together"
               fill
               className="object-cover"
