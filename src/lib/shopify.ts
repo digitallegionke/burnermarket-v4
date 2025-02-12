@@ -136,12 +136,19 @@ export async function getAllCollections() {
   try {
     console.log('Fetching collections...');
     
+    console.log('Fetching all collections...');
     const collections = await client.collection.fetchAll();
     
     if (!collections) {
       console.error('No collections returned from Shopify');
       throw new Error('No collections returned from Shopify');
     }
+
+    console.log('Found collections:', collections.map(c => ({
+      id: c.id,
+      title: c.title,
+      handle: c.handle
+    })));
     
     // Convert the GraphModel objects to plain objects
     const plainCollections = collections.map(collection => ({
@@ -174,12 +181,20 @@ export async function getProductsByCollection(collectionId: string) {
   try {
     console.log(`Fetching products for collection: ${collectionId}`);
     
+    console.log(`Fetching products for collection ${collectionId}...`);
     const collection = await client.collection.fetchWithProducts(collectionId);
     
     if (!collection) {
       console.error('Collection not found:', collectionId);
       return [];
     }
+
+    console.log('Collection products:', collection.products.map(p => ({
+      id: p.id,
+      title: p.title,
+      imageCount: p.images.length,
+      firstImageSrc: p.images[0]?.src
+    })));
     
     // Convert the GraphModel objects to plain objects
     const plainProducts = collection.products.map(product => ({
@@ -222,4 +237,4 @@ export async function getProductsByCollection(collectionId: string) {
   }
 }
 
-export default client; 
+export default client;
