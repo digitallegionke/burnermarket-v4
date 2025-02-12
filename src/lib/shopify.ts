@@ -237,4 +237,27 @@ export async function getProductsByCollection(collectionId: string) {
   }
 }
 
+export async function getBannerImage() {
+  try {
+    console.log('Fetching banner image...');
+    const collections = await client.collection.fetchAll();
+    const homepageCollection = collections.find(c => c.handle === 'frontpage');
+    
+    if (homepageCollection && homepageCollection.image) {
+      return {
+        src: homepageCollection.image.src,
+        alt: homepageCollection.image.altText || 'Hero banner',
+        width: homepageCollection.image.width || 1920,
+        height: homepageCollection.image.height || 1080
+      };
+    }
+    
+    console.error('No banner image found in homepage collection');
+    return null;
+  } catch (error: any) {
+    console.error('Error fetching banner image:', error);
+    return null;
+  }
+}
+
 export default client;

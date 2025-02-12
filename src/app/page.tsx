@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import AddToCartButton from '@/components/AddToCartButton';
 import ProductImage from '@/components/ProductImage';
-import { getProductsByCollection, getAllCollections } from '@/lib/shopify';
+import { getProductsByCollection, getAllCollections, getBannerImage } from '@/lib/shopify';
 
 interface ShopifyImage {
   src: string;
@@ -37,8 +37,13 @@ export const revalidate = 60; // Revalidate this page every 60 seconds
 export default async function Home() {
   let boxProducts: ShopifyProduct[] = [];
   let burnerDropProducts: ShopifyProduct[] = [];
+  let bannerImage = null;
   try {
-    const collections = await getAllCollections();
+    const [collections, banner] = await Promise.all([
+      getAllCollections(),
+      getBannerImage()
+    ]);
+    bannerImage = banner;
     
     const boxCollection = collections.find(collection => 
       collection.handle.toLowerCase() === 'build-your-box' || 
@@ -63,26 +68,39 @@ export default async function Home() {
   return (
     <div className="pt-[120px]">
       {/* Hero Section */}
-      <section className="relative h-[80vh] min-h-[600px] w-full">
-        <div className="absolute inset-0">
-          <div className="w-full h-full bg-[rgb(53,68,57)]">
-            <div className="w-full h-full flex items-center justify-center">
-              <span className="text-white text-lg">Hero image loading...</span>
-            </div>
-          </div>
-          <div className="absolute inset-0 bg-black/30" />
+      <section className="flex flex-col justify-start items-center gap-[70px] pt-[60px]">
+        <div className="flex flex-col justify-start items-start self-stretch gap-9 px-20">
+          <h1 className="w-[999px] text-[64px] font-semibold text-left text-[#354439]">
+            Bring Loved Ones Together with Every Delicious, Clean Creation.
+          </h1>
+          <Link 
+            href="/shop"
+            className="flex justify-center items-center gap-2 px-7 py-3.5 rounded-[999px] bg-[#c06654] hover:bg-[#c06654]/90 transition-colors"
+          >
+            <span className="text-lg font-bold text-white">
+              Discover Burner Market
+            </span>
+          </Link>
         </div>
-        <div className="relative h-full container flex items-center">
-          <div className="max-w-2xl">
-            <h1 className="text-[44px] md:text-[56px] font-semibold leading-[1.2] mb-8 text-white">
-              Discover Fresh, Local Ingredients for Your Kitchen
-            </h1>
-            <Link 
-              href="/shop"
-              className="inline-block bg-white text-[rgb(53,68,57)] px-8 py-3 rounded-full text-lg font-semibold hover:bg-gray-100 transition-colors"
-            >
-              Shop Now
-            </Link>
+        
+        <div className="flex flex-col justify-start items-center self-stretch relative overflow-hidden gap-[43px] pb-20 bg-[#354439]">
+          <div className="self-stretch h-[534px] relative">
+            <Image
+              src="/images/hero/pexels-august-de-richelieu-4262418 2.png"
+              alt="Family enjoying a meal together"
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+          <div className="flex flex-col justify-start items-start self-stretch gap-[13px] px-20">
+            <p className="text-[19px] font-semibold text-left text-white/60">
+              OUR CORE MISSION
+            </p>
+            <p className="w-[1214px] text-[43px] text-left text-white">
+              We curate the finest, clean, and delicious food items to make it easy for you to create
+              mouth-watering snacks and meals for yourself and your loved ones, effortlessly.
+            </p>
           </div>
         </div>
       </section>
