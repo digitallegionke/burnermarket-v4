@@ -1,17 +1,71 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getAllRecipes } from '@/lib/airtable';
+import { getAllRecipes, Recipe } from '@/lib/airtable';
 
 export const revalidate = 60; // Revalidate this page every 60 seconds
 
 export default async function RecipesPage() {
-  const recipes = await getAllRecipes();
+  let recipes: Recipe[] = [];
+  let error: string | null = null;
+
+  try {
+    recipes = await getAllRecipes();
+    
+    // Basic validation of recipe data
+    recipes = recipes.filter(recipe => {
+      const isValid = recipe.name && typeof recipe.name === 'string';
+      if (!isValid) {
+        console.warn('Filtered out invalid recipe:', recipe);
+      }
+      return isValid;
+    });
+
+    console.log(`Loaded ${recipes.length} valid recipes`);
+  } catch (e) {
+    console.error('Error in recipe page:', e);
+    error = e instanceof Error ? e.message : 'Failed to load recipes';
+  }
 
   // Function to safely convert recipe name to slug
   const createSlug = (name: string) => {
     return name ? name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : '';
   };
+
+  // Early return for error state
+  if (error) {
+    return (
+      <div className="pt-[120px]">
+        <div className="container py-16">
+          <div className="text-center">
+            <h1 className="text-2xl font-semibold text-[rgb(53,68,57)] mb-4">Error Loading Recipes</h1>
+            <p className="text-[rgb(53,68,57)]/70 mb-8">{error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="bg-[rgb(53,68,57)] text-white px-6 py-2 rounded-lg hover:bg-[rgb(53,68,57)]/90"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (recipes.length === 0) {
+    return (
+      <div className="pt-[120px]">
+        <div className="container py-16">
+          <div className="text-center">
+            <h1 className="text-2xl font-semibold text-[rgb(53,68,57)] mb-4">No Recipes Found</h1>
+            <p className="text-[rgb(53,68,57)]/70">
+              No recipes are currently available. Please check back later.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-[120px]">
@@ -44,6 +98,8 @@ export default async function RecipesPage() {
                       src={recipe.image[0].url}
                       alt={recipe.name || 'Recipe Image'}
                       fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      priority={recipes.indexOf(recipe) === 0}
                       className="object-cover"
                     />
                   ) : (
@@ -136,6 +192,7 @@ export default async function RecipesPage() {
                       src={recipe.image[0].url}
                       alt={recipe.name || 'Recipe Image'}
                       fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
                       className="object-cover"
                     />
                   ) : (

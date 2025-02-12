@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const Navbar = () => {
   const [isDirectoryOpen, setIsDirectoryOpen] = useState(false);
@@ -9,13 +10,21 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 w-full bg-white z-50 border-b border-[rgb(53,68,57)]/20">
       <div className="container h-[120px] flex justify-between items-center">
-        <div className="flex-1 flex items-center justify-center sm:justify-start">
-          <Link href="/" className="text-[26px] font-semibold">
-            Burner Market Co.
-          </Link>
-        </div>
-        
-        <div className="hidden sm:flex gap-[69px]">
+        {/* Logo */}
+        <Link href="/" className="flex-shrink-0">
+          <div className="relative w-[180px] h-[60px]">
+            <Image
+              src="/images/BM logo.svg"
+              alt="Burner Market"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <div className="hidden lg:flex items-center gap-16">
           <Link href="/shop" className="nav-link">Shop</Link>
           <Link href="/recipes" className="nav-link">Recipes</Link>
           <div className="relative">
@@ -54,20 +63,19 @@ const Navbar = () => {
           </div>
           <Link href="/our-story" className="nav-link">Our Story</Link>
         </div>
-        
-        <div className="sm:hidden">
-          <button className="p-2">
-            <span className="sr-only">Open menu</span>
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M4 6h16M4 12h16M4 18h16" 
-              />
-            </svg>
-          </button>
-        </div>
+
+        {/* Mobile Menu Button */}
+        <button className="lg:hidden p-2">
+          <span className="sr-only">Open menu</span>
+          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={2} 
+              d="M4 6h16M4 12h16M4 18h16" 
+            />
+          </svg>
+        </button>
       </div>
     </nav>
   );
