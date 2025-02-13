@@ -17,7 +17,7 @@ const Navbar = () => {
       <div className="flex justify-between items-center w-[1440px] h-[120px] px-[120px] mx-auto">
         {/* Logo Section */}
         <div className="flex justify-start items-center gap-[54px]">
-          <Link href="/" className="flex items-start relative overflow-hidden">
+          <Link href="/" className="flex items-start relative overflow-hidden gap-1">
             <Image
               src="/images/BM logo.svg"
               alt="Burner Market"
@@ -25,14 +25,7 @@ const Navbar = () => {
               height={58}
               priority
             />
-            <Image
-              src="/images/tm.svg"
-              alt="TM"
-              width={17}
-              height={6}
-              className="ml-1"
-              priority
-            />
+            <span className="text-[10px] text-[#354439] font-medium leading-none mt-1">TM</span>
           </Link>
         </div>
 

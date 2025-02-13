@@ -14,9 +14,6 @@ const nextConfig = {
       }
     ],
   },
-  experimental: {
-    missingSuspenseWithCSRError: false,
-  },
 };
 
-module.exports = nextConfig; 
+module.exports = nextConfig;

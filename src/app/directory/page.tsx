@@ -4,8 +4,21 @@ import Image from 'next/image';
 
 const resources = [
   {
+    title: 'Our Farmers',
+    description: 'Meet the local farmers who grow your food with care and dedication',
+    link: '/directory/farmers',
+    image: '/images/collections/produce.jpg'
+  },
+  {
+    title: 'Ingredients',
+    description: 'Explore our curated selection of high-quality, sustainable ingredients',
+    link: '/directory/ingredients',
+    image: '/images/collections/produce.jpg'
+  },
+  {
     title: 'Cooking Guides',
     description: 'Learn essential cooking techniques and kitchen basics',
+    link: '#',
     links: [
       'Basic Knife Skills',
       'Kitchen Equipment Guide',
@@ -16,31 +29,12 @@ const resources = [
   {
     title: 'Seasonal Ingredients',
     description: 'Discover what\'s in season and how to use it',
+    link: '#',
     links: [
       'Spring Produce Guide',
       'Summer Fruits & Vegetables',
       'Fall Harvest Guide',
       'Winter Ingredients'
-    ]
-  },
-  {
-    title: 'Dietary Resources',
-    description: 'Find recipes and tips for various dietary needs',
-    links: [
-      'Vegetarian & Vegan',
-      'Gluten-Free Guide',
-      'Low-Carb Options',
-      'Dairy-Free Cooking'
-    ]
-  },
-  {
-    title: 'Kitchen Tips',
-    description: 'Make the most of your kitchen and ingredients',
-    links: [
-      'Reducing Food Waste',
-      'Ingredient Substitutions',
-      'Kitchen Organization',
-      'Time-Saving Tips'
     ]
   }
 ];
@@ -53,30 +47,45 @@ export default function DirectoryPage() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-16">
           {resources.map((resource, index) => (
-            <div key={index} className="flex flex-col gap-5">
-              <div className="aspect-[16/9] relative bg-[rgb(248,248,248)]">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <h2 className="text-[26px] font-semibold">{resource.title}</h2>
-                </div>
+            <Link 
+              key={index} 
+              href={resource.link}
+              className="flex flex-col gap-5 group"
+            >
+              <div className="aspect-[16/9] relative bg-[rgb(248,248,248)] overflow-hidden">
+                {resource.image ? (
+                  <Image
+                    src={resource.image}
+                    alt={resource.title}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <h2 className="text-[26px] font-semibold">{resource.title}</h2>
+                  </div>
+                )}
               </div>
               <div className="flex flex-col gap-4">
+                <h2 className="text-[26px] font-semibold group-hover:text-[#c06654] transition-colors">
+                  {resource.title}
+                </h2>
                 <p className="text-[18px] text-[rgb(53,68,57)]/70">
                   {resource.description}
                 </p>
-                <ul className="space-y-2">
-                  {resource.links.map((link, linkIndex) => (
-                    <li key={linkIndex}>
-                      <Link 
-                        href="#" 
-                        className="text-[18px] font-semibold hover:text-[#c06654] link-transition"
-                      >
-                        {link}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                {resource.links && (
+                  <ul className="space-y-2">
+                    {resource.links.map((link, linkIndex) => (
+                      <li key={linkIndex}>
+                        <span className="text-[18px] font-semibold hover:text-[#c06654] link-transition">
+                          {link}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
